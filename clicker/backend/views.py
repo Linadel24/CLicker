@@ -2,19 +2,48 @@ from backend.forms import UserForm
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from .models import Core, Boost
+from .serializers import CoreSerializer, BoostSerializer
+from rest_framework import viewsets
 
 
 
 @login_required
 def index(request):
-    return render(request, 'index.html')
+    core = Core.objects.get(user=request.user)
+    boosts = Boost.objects.filter(core=core)
+    return render(request, 'index.html', {'core': core, 'boosts': boosts})
+
+
+@api_view(['GET'])
+def call_click(request):
+    core = Core.objects.get(user=request.user)
+    is_levelup = core.click()
+    if is_levelup:
+        Boost.objects.create(core=core, price=core.coins, power=core.level*20)
+    return Response({
+        'core': CoreSerializer(core).data,
+        'is_levelup': is_levelup,
+    })
+
+class BoostViewSet(viewsets.ModelViewSet):
+    queryset = Boost.objects.all()
+    serializer_class = BoostSerializer
+
+    def get_queryset(self):
+        core = Core.objects.get(user=self.request.user)
+        boosts = Boost.objects.filter(core=core)
+        return boosts
 
 def register(request):
     if request.method == 'POST':
         user_form = UserForm(request.POST)
         if user_form.is_valid():
             user = user_form.save()
-            print(user)
+            core = Core(user=user)
+            core.save()
             login(request, user)
             return redirect('index')
         return render(request, 'register.html', {'user_form' : user_form})
