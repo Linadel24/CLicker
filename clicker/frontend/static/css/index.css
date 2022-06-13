@@ -1,0 +1,23 @@
+html, body {
+    height: 100%;
+    margin: 0;
+
+    background-image: url(https://animashki.info/uploads/posts/2016-05/1463857768_236.gif);}
+.app {
+margin: auto;
+  border-radius: 25px;
+    padding: 10px;
+    width: 450px;
+}
+.but{
+background-color: #B57EDC;
+border: 1px solid #2F4F4F;
+  border-radius: 10px;
+}
+
+.am{
+  background-color: #B57EDC;
+  border: 1px solid #2F4F4F;
+    border-radius: 50px;
+    width: 450px;
+}

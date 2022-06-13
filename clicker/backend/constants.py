@@ -1,4 +1,4 @@
-BOOST_TYPE_NAME_TO_NUMBER = {
+BOOST_TYPE_NAME_TO_NUMBER ={
     'casual': 0,
     'auto': 1,
 }
